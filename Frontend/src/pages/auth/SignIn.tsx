@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { ContextHolder } from "@frontegg/rest-api";
 import { useAuth, useLoginWithRedirect } from "@frontegg/react";
+import io from "socket.io-client";
+
+const socket = io.connect("http://localhost:3001");
 
 export const SignIn = () => {
   const { user, isAuthenticated } = useAuth();
@@ -17,6 +20,8 @@ export const SignIn = () => {
     window.location.href = `${baseUrl}/oauth/logout?post_logout_redirect_uri=${window.location}`;
   };
 
+  const sendMessage = () => {};
+
   return (
     <div className="App">
       {isAuthenticated ? (
@@ -29,6 +34,10 @@ export const SignIn = () => {
           </div>
           <div>
             <button onClick={() => logout()}>Click to logout</button>
+          </div>
+          <div>
+            <input type="text" placeholder="Message..." />
+            <button>Send Message</button>
           </div>
         </div>
       ) : (

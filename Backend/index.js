@@ -17,5 +17,5 @@ const io = new Server(server, {
 });
 
 server.listen(3001, () => {
-  console.log("welocme to server");
+  console.log("Welcome to server");
 });
