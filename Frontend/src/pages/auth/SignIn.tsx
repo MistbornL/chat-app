@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { ContextHolder } from "@frontegg/rest-api";
 import { useAuth, useLoginWithRedirect } from "@frontegg/react";
-import { io } from "socket.io-client";
-import { Link } from "react-router-dom";
 
-const socket = io("http://localhost:3001");
+import { Link } from "react-router-dom";
 
 export const SignIn = () => {
   const { user, isAuthenticated } = useAuth();
@@ -15,19 +13,11 @@ export const SignIn = () => {
     if (!isAuthenticated) {
       loginWithRedirect();
     }
-
-    socket.on("recieve_message", (data) => {
-      alert(data.message);
-    });
   }, [isAuthenticated, loginWithRedirect]);
 
   const logout = () => {
     const baseUrl = ContextHolder.getContext().baseUrl;
     window.location.href = `${baseUrl}/oauth/logout?post_logout_redirect_uri=${window.location}`;
-  };
-
-  const sendMessage = () => {
-    socket.emit("send_message", { message: "Hello" });
   };
 
   return (
