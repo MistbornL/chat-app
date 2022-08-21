@@ -1,13 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ContextHolder } from "@frontegg/rest-api";
 import { useAuth, useLoginWithRedirect } from "@frontegg/react";
 import { io } from "socket.io-client";
+import { Link } from "react-router-dom";
 
 const socket = io("http://localhost:3001");
 
 export const SignIn = () => {
   const { user, isAuthenticated } = useAuth();
   const loginWithRedirect = useLoginWithRedirect();
+  const [room, setRoom] = useState<string>("");
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -38,12 +40,23 @@ export const SignIn = () => {
           <div>
             <span>Logged in as: {user?.name}</span>
           </div>
-          <div>
+          {/* <div>
             <button onClick={() => logout()}>Click to logout</button>
+          </div> */}
+          <div>
+            <h2>JOIN CHAT</h2>
           </div>
           <div>
-            <input type="text" placeholder="Message..." />
-            <button onClick={sendMessage}>Send Message</button>
+            <input
+              type="text"
+              placeholder="Room"
+              onChange={(e) => {
+                setRoom(e.target.value);
+              }}
+            />
+            <Link to={`/chat/${room}`}>
+              <button>Join</button>
+            </Link>
           </div>
         </div>
       ) : (
