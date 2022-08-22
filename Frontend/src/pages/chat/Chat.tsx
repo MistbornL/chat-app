@@ -1,4 +1,3 @@
-import { useAuth } from "@frontegg/react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
@@ -6,16 +5,19 @@ import "./chat.scss";
 
 export const Chat = () => {
   const [chatRoom, setChatRoom] = useState("");
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState<any>("");
   const { room } = useParams();
+  const [messages, setMessages] = useState([]);
 
-  var socket: any;
+  const socket = io("http://localhost:3001", { withCredentials: false });
 
   useEffect(() => {
-    const socket = io("http://localhost:3001", { withCredentials: false });
     socket.emit("join", { room });
-  });
+
+    socket.on("recieve_message", (data) => {
+      setMessage((prevMsg: [any]) => [...prevMsg, data.message]);
+    });
+  }, [room, socket]);
 
   const handleMessage = (e: any) => {
     setMessage(e.target.value);
