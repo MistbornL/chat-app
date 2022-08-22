@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Socket } from "socket.io";
 import { io } from "socket.io-client";
 import "./chat.scss";
 
+let socket: Socket;
 export const Chat = () => {
   const [chatRoom, setChatRoom] = useState("");
   const [message, setMessage] = useState<any>("");
   const { room } = useParams();
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<any>([]);
+  console.log(messages);
 
   const socket = io("http://localhost:3001", { withCredentials: false });
 
   useEffect(() => {
-    socket.emit("join", { room });
-
     socket.on("recieve_message", (data) => {
-      setMessage((prevMsg: [any]) => [...prevMsg, data.message]);
+      setMessages((prevMsg: [any]) => [...prevMsg, data.message]);
     });
-  }, [room, socket]);
+  });
 
   const handleMessage = (e: any) => {
     setMessage(e.target.value);
