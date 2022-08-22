@@ -9,27 +9,39 @@ export const Chat = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const { room } = useParams();
-  console.log(room);
 
-  const { user } = useAuth();
-  console.log(user);
-
-  //   socket.on("recieve_message", (data) => {
-  //     alert(data.message);
-  // }
   var socket: any;
+
   useEffect(() => {
     const socket = io("http://localhost:3001", { withCredentials: false });
     socket.emit("join", { room });
   });
+
+  const handleMessage = (e: any) => {
+    setMessage(e.target.value);
+  };
+
+  const handleKeyDown = (e: any) => {
+    if (e.key === "Enter") {
+      socket.emit("send_message", { message: message });
+    }
+  };
 
   return (
     <div className="chat">
       <div className="chat-top">
         <h1>Welcome to {room}</h1>
       </div>
-      <div className="chat-middle"></div>
-      <div className="chat-bottom"></div>
+      <div className="chat-middle">
+        <div className="chat-bottom">
+          <input
+            onChange={handleMessage}
+            onKeyDown={handleKeyDown}
+            type="text"
+            placeholder="Type Your Message Here..."
+          />
+        </div>
+      </div>
     </div>
   );
 };
