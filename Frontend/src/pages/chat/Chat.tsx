@@ -11,11 +11,8 @@ export const Chat = () => {
   const { room } = useParams();
   const [messages, setMessages] = useState<any>([]);
   const { user } = useAuth();
-  useEffect(() => {
-    // socket.on("recieve_message", (data) => {
-    //   setMessages((prevMsg: [any]) => [...prevMsg, data.message]);
-    // });
 
+  useEffect(() => {
     socket.emit("join_room", { room }, (error: any) => {
       if (error) {
         alert(error);
@@ -23,24 +20,26 @@ export const Chat = () => {
     });
   }, [room]);
 
-  const handleMessage = (e: any) => {
-    setMessage(e.target.value);
-  };
-
-  const sendMessage = async (e: any) => {
-    e.preventDefault();
+  const sendMessage = async () => {
     if (message !== "") {
       const messageData = {
         room: room,
         author: user.name,
         message: message,
-        time: `${new Date(Date.now()).getHours()} ${new Date(
+        time: `${new Date(Date.now()).getHours()}:${new Date(
           Date.now()
         ).getMinutes()}`,
       };
       await socket.emit("send_message", { message: messageData });
     }
     setMessage("");
+  };
+
+  const handleEnter = (e: any) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
   };
 
   return (
@@ -51,10 +50,13 @@ export const Chat = () => {
       <div className="chat-middle">
         <div className="chat-bottom">
           <input
-            onChange={handleMessage}
+            onChange={(e) => {
+              setMessage(e.target.value);
+            }}
             type="text"
             value={message}
             placeholder="Type Your Message Here..."
+            onKeyDown={handleEnter}
           />
           <button onClick={sendMessage}>Send</button>
         </div>
