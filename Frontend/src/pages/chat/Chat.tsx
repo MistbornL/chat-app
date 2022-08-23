@@ -1,3 +1,4 @@
+import { useAuth } from "@frontegg/react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
@@ -9,27 +10,36 @@ export const Chat = () => {
   const [message, setMessage] = useState<any>("");
   const { room } = useParams();
   const [messages, setMessages] = useState<any>([]);
-  console.log(messages);
+  const { user } = useAuth();
+  useEffect(() => {
+    // socket.on("recieve_message", (data) => {
+    //   setMessages((prevMsg: [any]) => [...prevMsg, data.message]);
+    // });
 
-  // useEffect(() => {
-  //   socket.on("recieve_message", (data) => {
-  //     setMessages((prevMsg: [any]) => [...prevMsg, data.message]);
-  //   });
-  // });
+    socket.emit("join_room", { room }, (error: any) => {
+      if (error) {
+        alert(error);
+      }
+    });
+  }, [room]);
 
   const handleMessage = (e: any) => {
     setMessage(e.target.value);
   };
 
-  const joinRoom = () => {
-    if (room !== "") {
-      socket.emit("join_room", room);
-    }
-  };
-
-  const handleSend = (e: any) => {
+  const sendMessage = async (e: any) => {
     e.preventDefault();
-    socket.emit("send_message", { message: message });
+    if (message !== "") {
+      const messageData = {
+        room: room,
+        author: user.name,
+        message: message,
+        time: `${new Date(Date.now()).getHours()} ${new Date(
+          Date.now()
+        ).getMinutes()}`,
+      };
+      await socket.emit("send_message", { message: messageData });
+    }
     setMessage("");
   };
 
@@ -46,7 +56,7 @@ export const Chat = () => {
             value={message}
             placeholder="Type Your Message Here..."
           />
-          <button onClick={handleSend}>Send</button>
+          <button onClick={sendMessage}>Send</button>
         </div>
       </div>
     </div>
