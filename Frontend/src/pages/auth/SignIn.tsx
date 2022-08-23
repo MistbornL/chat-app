@@ -30,9 +30,9 @@ export const SignIn = () => {
           <div>
             <span>Logged in as: {user?.name}</span>
           </div>
-          {/* <div>
+          <div>
             <button onClick={() => logout()}>Click to logout</button>
-          </div> */}
+          </div>
           <div>
             <h2>JOIN CHAT</h2>
           </div>

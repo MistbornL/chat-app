@@ -6,10 +6,9 @@ import "./chat.scss";
 
 const socket = io("ws://localhost:3001", { withCredentials: false });
 export const Chat = () => {
-  const [chatRoom, setChatRoom] = useState("");
   const [message, setMessage] = useState<any>("");
   const { room } = useParams();
-  const [messages, setMessages] = useState<any>([]);
+  const [messageList, setMessageList] = useState<any>([]);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -20,6 +19,11 @@ export const Chat = () => {
     });
   }, [room]);
 
+  useEffect(() => {
+    socket.on("receive_message", (data) => {
+      setMessageList((list: any) => [...list, data]);
+    });
+  });
   const sendMessage = async () => {
     if (message !== "") {
       const messageData = {
@@ -30,7 +34,7 @@ export const Chat = () => {
           Date.now()
         ).getMinutes()}`,
       };
-      await socket.emit("send_message", { message: messageData });
+      await socket.emit("send_message", messageData);
     }
     setMessage("");
   };
@@ -48,6 +52,9 @@ export const Chat = () => {
         <h1>Welcome to {room}</h1>
       </div>
       <div className="chat-middle">
+        {messageList.map((message: any, index: number): any => {
+          return <p key={index}>{message.message}</p>;
+        })}
         <div className="chat-bottom">
           <input
             onChange={(e) => {
