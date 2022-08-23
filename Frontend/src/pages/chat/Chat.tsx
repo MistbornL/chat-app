@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Socket } from "socket.io";
 import { io } from "socket.io-client";
 import "./chat.scss";
 
-let socket: Socket;
+const socket = io("ws://localhost:3001", { withCredentials: false });
 export const Chat = () => {
   const [chatRoom, setChatRoom] = useState("");
   const [message, setMessage] = useState<any>("");
@@ -12,22 +11,26 @@ export const Chat = () => {
   const [messages, setMessages] = useState<any>([]);
   console.log(messages);
 
-  const socket = io("http://localhost:3001", { withCredentials: false });
-
-  useEffect(() => {
-    socket.on("recieve_message", (data) => {
-      setMessages((prevMsg: [any]) => [...prevMsg, data.message]);
-    });
-  });
+  // useEffect(() => {
+  //   socket.on("recieve_message", (data) => {
+  //     setMessages((prevMsg: [any]) => [...prevMsg, data.message]);
+  //   });
+  // });
 
   const handleMessage = (e: any) => {
     setMessage(e.target.value);
   };
 
-  const handleKeyDown = (e: any) => {
-    if (e.key === "Enter") {
-      socket.emit("send_message", { message: message });
+  const joinRoom = () => {
+    if (room !== "") {
+      socket.emit("join_room", room);
     }
+  };
+
+  const handleSend = (e: any) => {
+    e.preventDefault();
+    socket.emit("send_message", { message: message });
+    setMessage("");
   };
 
   return (
@@ -39,10 +42,11 @@ export const Chat = () => {
         <div className="chat-bottom">
           <input
             onChange={handleMessage}
-            onKeyDown={handleKeyDown}
             type="text"
+            value={message}
             placeholder="Type Your Message Here..."
           />
+          <button onClick={handleSend}>Send</button>
         </div>
       </div>
     </div>
