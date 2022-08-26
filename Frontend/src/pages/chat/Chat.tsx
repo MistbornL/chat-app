@@ -29,12 +29,14 @@ export const Chat = () => {
       const messageData = {
         room: room,
         author: user.name,
+        img: user.profilePictureUrl,
         message: message,
         time: `${new Date(Date.now()).getHours()}:${new Date(
           Date.now()
         ).getMinutes()}`,
       };
       await socket.emit("send_message", messageData);
+      setMessageList((list: any) => [...list, message]);
     }
     setMessage("");
   };
@@ -53,6 +55,7 @@ export const Chat = () => {
       </div>
       <div className="chat-middle">
         <div className="chat-section">
+          <div className="input"></div>
           {messageList.map((message: any, index: number): any => {
             return (
               <>
@@ -60,7 +63,7 @@ export const Chat = () => {
                 <div className="msg">
                   <img
                     style={{ width: "50px", height: "50px" }}
-                    src={user.profilePictureUrl}
+                    src={message.img}
                   />
                   <p key={index}>{message.message}</p>
                 </div>
