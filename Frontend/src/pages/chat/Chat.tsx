@@ -2,6 +2,7 @@ import { useAuth } from "@frontegg/react";
 import { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
+
 import "./chat.scss";
 
 const socket = io("ws://localhost:3001", { withCredentials: false });
@@ -21,7 +22,7 @@ export const Chat = () => {
 
   useEffect(() => {
     socket.on("receive_message", (data) => {
-      setMessageList((list: any) => (list ? [...list, data] : null));
+      setMessageList((list: any) => [...list, data]);
     });
   }, []);
 
@@ -32,14 +33,16 @@ export const Chat = () => {
         author: user.name,
         img: user.profilePictureUrl,
         message: message,
-        time: `${new Date(Date.now()).getHours()}:${new Date(
-          Date.now()
-        ).getMinutes()}`,
+        time:
+          new Date(Date.now()).getHours() +
+          ":" +
+          new Date(Date.now()).getMinutes(),
       };
+
       await socket.emit("send_message", messageData);
-      setMessageList((list: any) => [...list, message]);
+      setMessageList((list: any) => [...list, messageData]);
+      setMessage("");
     }
-    setMessage("");
   };
 
   const handleEnter = (e: any) => {
