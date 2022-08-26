@@ -52,9 +52,23 @@ export const Chat = () => {
         <h1>Welcome to {room}</h1>
       </div>
       <div className="chat-middle">
-        {messageList.map((message: any, index: number): any => {
-          return <p key={index}>{message.message}</p>;
-        })}
+        <div className="chat-section">
+          {messageList.map((message: any, index: number): any => {
+            return (
+              <>
+                <span>{message.time}</span>
+                <div className="msg">
+                  <img
+                    style={{ width: "50px", height: "50px" }}
+                    src={user.profilePictureUrl}
+                  />
+                  <p key={index}>{message.message}</p>
+                </div>
+              </>
+            );
+          })}
+        </div>
+
         <div className="chat-bottom">
           <input
             onChange={(e) => {
