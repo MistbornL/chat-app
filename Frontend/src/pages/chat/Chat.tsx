@@ -1,5 +1,5 @@
 import { useAuth } from "@frontegg/react";
-import React, { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import "./chat.scss";
@@ -21,9 +21,10 @@ export const Chat = () => {
 
   useEffect(() => {
     socket.on("receive_message", (data) => {
-      setMessageList((list: any) => [...list, data]);
+      setMessageList((list: any) => (list ? [...list, data] : null));
     });
-  });
+  }, []);
+
   const sendMessage = async () => {
     if (message !== "") {
       const messageData = {
@@ -55,19 +56,19 @@ export const Chat = () => {
       </div>
       <div className="chat-middle">
         <div className="chat-section">
-          <div className="input"></div>
           {messageList.map((message: any, index: number): any => {
             return (
-              <>
+              <Fragment key={index}>
                 <span>{message.time}</span>
                 <div className="msg">
                   <img
+                    alt="userimg"
                     style={{ width: "50px", height: "50px" }}
                     src={message.img}
                   />
-                  <p key={index}>{message.message}</p>
+                  <p>{message.message}</p>
                 </div>
-              </>
+              </Fragment>
             );
           })}
         </div>
