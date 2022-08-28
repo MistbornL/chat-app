@@ -1,17 +1,22 @@
 import { useAuth } from "@frontegg/react";
-import { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
-
 import "./chat.scss";
 
 const socket = io("ws://localhost:3001", { withCredentials: false });
 export const Chat = () => {
-  const [message, setMessage] = useState<any>("");
   const { room } = useParams();
-  const [messageList, setMessageList] = useState<any>([]);
+  type MessageListItem = {
+    room: string;
+    author: string;
+    img: string;
+    message: string;
+    time: string;
+  };
+  const [messageList, setMessageList] = useState<MessageListItem[]>([]);
   const { user } = useAuth();
-
+  const inputRef = useRef<null | HTMLInputElement>(null);
   useEffect(() => {
     socket.emit("join_room", { room }, (error: any) => {
       if (error) {
@@ -21,15 +26,22 @@ export const Chat = () => {
   }, [room]);
 
   useEffect(() => {
-    socket.on("receive_message", (data) => {
-      setMessageList((list: any) => [...list, data]);
-    });
+    const listener = (data: MessageListItem) => {
+      console.log(data);
+      setMessageList((previous) => [...previous, data]);
+    };
+
+    socket.on("receive_message", listener);
+    return () => {
+      socket.off("receive_message", listener);
+    };
   }, []);
 
-  const sendMessage = async () => {
+  const sendMessage = () => {
+    const message = inputRef.current?.value || "";
     if (message !== "") {
       const messageData = {
-        room: room,
+        room: room || "",
         author: user.name,
         img: user.profilePictureUrl,
         message: message,
@@ -39,17 +51,15 @@ export const Chat = () => {
           new Date(Date.now()).getMinutes(),
       };
 
-      await socket.emit("send_message", messageData);
-      setMessageList((list: any) => [...list, messageData]);
-      setMessage("");
+      socket.emit("send_message", messageData);
+      setMessageList((previous) => [...previous, messageData]);
+      inputRef.current!.value = "";
     }
   };
 
-  const handleEnter = (e: any) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      sendMessage();
-    }
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    sendMessage();
   };
 
   return (
@@ -59,13 +69,13 @@ export const Chat = () => {
       </div>
       <div className="chat-middle">
         <div className="chat-section">
-          {messageList.map((message: any, index: number): any => {
+          {messageList.map((message, index) => {
             return (
               <Fragment key={index}>
                 <span>{message.time}</span>
                 <div className="msg">
                   <img
-                    alt="userimg"
+                    alt="userImg"
                     style={{ width: "50px", height: "50px" }}
                     src={message.img}
                   />
@@ -76,18 +86,16 @@ export const Chat = () => {
           })}
         </div>
 
-        <div className="chat-bottom">
+        <form className="chat-bottom" onSubmit={handleSubmit}>
           <input
-            onChange={(e) => {
-              setMessage(e.target.value);
-            }}
+            ref={inputRef}
             type="text"
-            value={message}
             placeholder="Type Your Message Here..."
-            onKeyDown={handleEnter}
           />
-          <button onClick={sendMessage}>Send</button>
-        </div>
+          <button type="submit" onClick={sendMessage}>
+            Send
+          </button>
+        </form>
       </div>
     </div>
   );
