@@ -70,7 +70,7 @@ export const Chat = () => {
       </div>
       <div className="chat-middle">
         <div className="chat-section">
-          <ScrollToBottom>
+          <ScrollToBottom className="scroll">
             {messageList.map((message, index) => {
               return (
                 <Fragment key={index}>
