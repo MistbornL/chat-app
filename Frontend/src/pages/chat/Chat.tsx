@@ -3,6 +3,7 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import "./chat.scss";
+import ScrollToBottom from "react-scroll-to-bottom";
 
 const socket = io("ws://localhost:3001", { withCredentials: false });
 export const Chat = () => {
@@ -69,21 +70,23 @@ export const Chat = () => {
       </div>
       <div className="chat-middle">
         <div className="chat-section">
-          {messageList.map((message, index) => {
-            return (
-              <Fragment key={index}>
-                <span>{message.time}</span>
-                <div className="msg">
-                  <img
-                    alt="userImg"
-                    style={{ width: "50px", height: "50px" }}
-                    src={message.img}
-                  />
-                  <p>{message.message}</p>
-                </div>
-              </Fragment>
-            );
-          })}
+          <ScrollToBottom>
+            {messageList.map((message, index) => {
+              return (
+                <Fragment key={index}>
+                  <span>{message.time}</span>
+                  <div className="msg">
+                    <img
+                      alt="userImg"
+                      style={{ width: "50px", height: "50px" }}
+                      src={message.img}
+                    />
+                    <p>{message.message}</p>
+                  </div>
+                </Fragment>
+              );
+            })}
+          </ScrollToBottom>
         </div>
 
         <form className="chat-bottom" onSubmit={handleSubmit}>
