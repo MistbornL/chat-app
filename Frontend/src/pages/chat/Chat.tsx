@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import "./chat.scss";
 import ScrollToBottom from "react-scroll-to-bottom";
+import penguin from "../../assets/Group.png";
 
 const socket = io("ws://localhost:3001", { withCredentials: false });
 export const Chat = () => {
@@ -90,14 +91,8 @@ export const Chat = () => {
         </div>
 
         <form className="chat-bottom" onSubmit={handleSubmit}>
-          <input
-            ref={inputRef}
-            type="text"
-            placeholder="Type Your Message Here..."
-          />
-          <button type="submit" onClick={sendMessage}>
-            Send
-          </button>
+          <input ref={inputRef} type="text" placeholder="Type Message..." />
+          <img src={penguin} alt="penguin" />
         </form>
       </div>
     </div>

@@ -1,6 +1,7 @@
 .chat {
   max-width: 430px;
   margin: 0 auto;
+  padding: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -11,6 +12,12 @@
     width: 100%;
     display: flex;
     justify-content: center;
+
+    h1 {
+      font-size: 25px;
+      color: #1dc2f7;
+      font-family: "Exo";
+    }
   }
   .chat-middle {
     position: relative;
@@ -39,8 +46,11 @@
         width: 99%;
         height: 60px;
         font-size: 20px;
-        background-color: rgb(219, 218, 218);
         border-style: none;
+      }
+      input::placeholder {
+        color: #cacaca;
+        font-family: "Encode Sans";
       }
       button {
         position: absolute;
