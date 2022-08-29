@@ -82,7 +82,9 @@ export const Chat = () => {
                       style={{ width: "50px", height: "50px" }}
                       src={message.img}
                     />
-                    <p>{message.message}</p>
+                    <div className="sent-message">
+                      <p>{message.message}</p>
+                    </div>
                   </div>
                 </Fragment>
               );
