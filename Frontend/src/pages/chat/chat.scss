@@ -41,7 +41,7 @@
     background-color: white;
 
     .chat-section {
-      height: 90%;
+      height: 94%;
 
       .scroll {
         width: 100%;
@@ -54,6 +54,7 @@
         gap: 30px;
 
         .sent-by-me {
+          line-break: anywhere;
           display: flex;
           align-items: center;
           border-radius: 28px;
@@ -70,6 +71,7 @@
         }
 
         .sent-by-else {
+          line-break: anywhere;
           display: flex;
           justify-content: flex-start;
           align-items: center;

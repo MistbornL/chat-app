@@ -5,10 +5,13 @@ import { io } from "socket.io-client";
 import "./chat.scss";
 import ScrollToBottom from "react-scroll-to-bottom";
 import penguin from "../../assets/Group.png";
+import Picker from "emoji-picker-react";
 
 const socket = io("ws://localhost:3001", { withCredentials: false });
 export const Chat = () => {
   const { room } = useParams();
+  const [showEmojis, setShowEmojis] = useState(false);
+  const [emoji, setChosenEmoji] = useState(null);
   type MessageListItem = {
     room: string;
     author: string;
@@ -65,6 +68,10 @@ export const Chat = () => {
     sendMessage();
   };
 
+  const onEmojiClick = (event: React.SyntheticEvent, emojiObject: any) => {
+    setChosenEmoji(emojiObject);
+  };
+
   return (
     <div className="chat">
       <div className="chat-top">
@@ -112,7 +119,21 @@ export const Chat = () => {
 
         <form className="chat-bottom" onSubmit={handleSubmit}>
           <input ref={inputRef} type="text" placeholder="Type Message..." />
-          <img src={penguin} alt="penguin" />
+
+          <img
+            style={{ cursor: "pointer" }}
+            src={penguin}
+            alt="penguin"
+            onClick={() => {
+              setShowEmojis(!showEmojis);
+            }}
+          />
+          {showEmojis ? (
+            <Picker
+              pickerStyle={{ width: "100%" }}
+              onEmojiClick={onEmojiClick}
+            />
+          ) : null}
         </form>
       </div>
     </div>
