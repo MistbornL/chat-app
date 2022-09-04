@@ -75,13 +75,26 @@ export const Chat = () => {
               return (
                 <Fragment key={index}>
                   <span>{message.time}</span>
-                  <div className="msg">
+                  <div
+                    className="msg"
+                    style={
+                      user.name === message.author
+                        ? { justifyContent: "flex-end" }
+                        : { justifyContent: "flex-start" }
+                    }
+                  >
                     <img
                       alt="userImg"
                       style={{ width: "50px", height: "50px" }}
                       src={message.img}
                     />
-                    <div className="sent-message">
+                    <div
+                      className={
+                        user.name === message.author
+                          ? "sent-by-me"
+                          : "sent-by-else"
+                      }
+                    >
                       <p>{message.message}</p>
                     </div>
                   </div>
