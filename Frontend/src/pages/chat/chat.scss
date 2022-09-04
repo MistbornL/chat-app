@@ -41,11 +41,20 @@
         display: flex;
         gap: 30px;
 
-        .sent-message div {
-          width: 57px;
+        div {
           height: 34px;
+          display: flex;
+          align-items: center;
+          border-radius: 28px;
+          border-bottom-left-radius: 5px;
+          border-top-left-radius: 50px;
+          padding: 10px;
 
           background: #00aed5;
+          p {
+            font-family: "Exo";
+            color: white;
+          }
         }
       }
     }

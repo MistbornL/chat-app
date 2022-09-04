@@ -17,7 +17,7 @@ export const Chat = () => {
     time: string;
   };
   const [messageList, setMessageList] = useState<MessageListItem[]>([]);
-  const { user } = useAuth();
+  const { user }: any = useAuth();
   const inputRef = useRef<null | HTMLInputElement>(null);
   useEffect(() => {
     socket.emit("join_room", { room }, (error: any) => {
@@ -29,7 +29,6 @@ export const Chat = () => {
 
   useEffect(() => {
     const listener = (data: MessageListItem) => {
-      console.log(data);
       setMessageList((previous) => [...previous, data]);
     };
 
