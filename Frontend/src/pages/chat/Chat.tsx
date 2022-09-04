@@ -16,9 +16,11 @@ export const Chat = () => {
     message: string;
     time: string;
   };
+
   const [messageList, setMessageList] = useState<MessageListItem[]>([]);
   const { user }: any = useAuth();
   const inputRef = useRef<null | HTMLInputElement>(null);
+
   useEffect(() => {
     socket.emit("join_room", { room }, (error: any) => {
       if (error) {
@@ -71,36 +73,40 @@ export const Chat = () => {
       <div className="chat-middle">
         <div className="chat-section">
           <ScrollToBottom className="scroll">
-            {messageList.map((message, index) => {
-              return (
-                <Fragment key={index}>
-                  <span>{message.time}</span>
-                  <div
-                    className="msg"
-                    style={
-                      user.name === message.author
-                        ? { justifyContent: "flex-end" }
-                        : { justifyContent: "flex-start" }
-                    }
-                  >
-                    <img
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "15px" }}
+            >
+              {messageList.map((message, index) => {
+                return (
+                  <Fragment key={index}>
+                    {/* <span>{message.time}</span> */}
+                    <div
+                      className="msg"
+                      style={
+                        user.name === message.author
+                          ? { justifyContent: "flex-end" }
+                          : { justifyContent: "flex-start" }
+                      }
+                    >
+                      {/* <img
                       alt="userImg"
                       style={{ width: "50px", height: "50px" }}
                       src={message.img}
-                    />
-                    <div
-                      className={
-                        user.name === message.author
-                          ? "sent-by-me"
-                          : "sent-by-else"
-                      }
-                    >
-                      <p>{message.message}</p>
+                    /> */}
+                      <div
+                        className={
+                          user.name === message.author
+                            ? "sent-by-me"
+                            : "sent-by-else"
+                        }
+                      >
+                        <p>{message.message}</p>
+                      </div>
                     </div>
-                  </div>
-                </Fragment>
-              );
-            })}
+                  </Fragment>
+                );
+              })}
+            </div>
           </ScrollToBottom>
         </div>
 
