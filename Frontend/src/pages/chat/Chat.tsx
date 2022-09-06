@@ -5,13 +5,14 @@ import { io } from "socket.io-client";
 import "./chat.scss";
 import ScrollToBottom from "react-scroll-to-bottom";
 import penguin from "../../assets/Group.png";
-import Picker from "emoji-picker-react";
 
 const socket = io("ws://localhost:3001", { withCredentials: false });
 export const Chat = () => {
   const { room } = useParams();
-  const [showEmojis, setShowEmojis] = useState(false);
-  const [emoji, setChosenEmoji] = useState(null);
+  type JoiningItems = {
+    room: string;
+    user: string;
+  };
   type MessageListItem = {
     room: string;
     author: string;
@@ -22,24 +23,36 @@ export const Chat = () => {
 
   const [messageList, setMessageList] = useState<MessageListItem[]>([]);
   const { user }: any = useAuth();
+  const [newComers, setNewComers] = useState<JoiningItems[]>([]);
   const inputRef = useRef<null | HTMLInputElement>(null);
 
   useEffect(() => {
-    socket.emit("join_room", { room }, (error: any) => {
+    socket.emit("join_room", { room: room, user: user.name }, (error: any) => {
       if (error) {
         alert(error);
       }
+
+      const joiningListener = (data: JoiningItems) => {
+        setNewComers((previous) => [...previous, data]);
+        console.log(data);
+      };
+
+      socket.on("receive_joining", joiningListener);
+      return () => {
+        socket.off("receive_joining", joiningListener);
+      };
     });
-  }, [room]);
+  }, [room, user.name]);
 
   useEffect(() => {
-    const listener = (data: MessageListItem) => {
+    const messageListener = (data: MessageListItem) => {
       setMessageList((previous) => [...previous, data]);
     };
 
-    socket.on("receive_message", listener);
+    socket.on("receive_message", messageListener);
+
     return () => {
-      socket.off("receive_message", listener);
+      socket.off("receive_message", messageListener);
     };
   }, []);
 
@@ -68,10 +81,6 @@ export const Chat = () => {
     sendMessage();
   };
 
-  const onEmojiClick = (event: React.SyntheticEvent, emojiObject: any) => {
-    setChosenEmoji(emojiObject);
-  };
-
   return (
     <div className="chat">
       <div className="chat-top">
@@ -86,7 +95,7 @@ export const Chat = () => {
               {messageList.map((message, index) => {
                 return (
                   <Fragment key={index}>
-                    {/* <span>{message.time}</span> */}
+                    {/* <span>{newComers[-1].user} joined in chat</span> */}
                     <div
                       className="msg"
                       style={
@@ -96,10 +105,10 @@ export const Chat = () => {
                       }
                     >
                       {/* <img
-                      alt="userImg"
-                      style={{ width: "50px", height: "50px" }}
-                      src={message.img}
-                    /> */}
+                        alt="userImg"
+                        style={{ width: "50px", height: "50px" }}
+                        src={message.img}
+                      /> */}
                       <div
                         className={
                           user.name === message.author
@@ -120,20 +129,7 @@ export const Chat = () => {
         <form className="chat-bottom" onSubmit={handleSubmit}>
           <input ref={inputRef} type="text" placeholder="Type Message..." />
 
-          <img
-            style={{ cursor: "pointer" }}
-            src={penguin}
-            alt="penguin"
-            onClick={() => {
-              setShowEmojis(!showEmojis);
-            }}
-          />
-          {showEmojis ? (
-            <Picker
-              pickerStyle={{ width: "100%" }}
-              onEmojiClick={onEmojiClick}
-            />
-          ) : null}
+          <img style={{ cursor: "pointer" }} src={penguin} alt="penguin" />
         </form>
       </div>
     </div>

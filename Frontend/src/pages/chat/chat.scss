@@ -93,13 +93,12 @@
     .chat-bottom {
       height: 50px;
       border-top: 1px solid #c8c3c3;
+
       input {
-        overflow-wrap: break-word;
         border-style: none;
         position: absolute;
         bottom: 0;
-        width: 90%;
-        height: 25px;
+
         font-size: 20px;
         border-style: none;
       }
