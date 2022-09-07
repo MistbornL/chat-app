@@ -18,12 +18,12 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   socket.on("join_room", (data) => {
+    console.log(data);
     socket.join(data.room);
     socket.to(data.room).emit("receive_joining", data);
   });
 
   socket.on("send_message", (data) => {
-    console.log(data);
     socket.to(data.room).emit("receive_message", data);
   });
 });

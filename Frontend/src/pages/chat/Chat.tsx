@@ -25,26 +25,27 @@ export const Chat = () => {
   const { user }: any = useAuth();
   const [newComers, setNewComers] = useState<JoiningItems[]>([]);
   const inputRef = useRef<null | HTMLInputElement>(null);
-
+  console.log(newComers);
   useEffect(() => {
     socket.emit("join_room", { room: room, user: user.name }, (error: any) => {
       if (error) {
         alert(error);
       }
-
-      const joiningListener = (data: JoiningItems) => {
-        setNewComers((previous) => [...previous, data]);
-        console.log(data);
-      };
-
-      socket.on("receive_joining", joiningListener);
-      return () => {
-        socket.off("receive_joining", joiningListener);
-      };
     });
   }, [room, user.name]);
 
   useEffect(() => {
+    const joiningListener = (data: JoiningItems) => {
+      if (
+        newComers.find((user) => user.user !== data.user) ||
+        newComers.length === 0
+      ) {
+        setNewComers((previous) => [...previous, data]);
+      }
+    };
+
+    socket.on("receive_joining", joiningListener);
+
     const messageListener = (data: MessageListItem) => {
       setMessageList((previous) => [...previous, data]);
     };
@@ -53,8 +54,9 @@ export const Chat = () => {
 
     return () => {
       socket.off("receive_message", messageListener);
+      socket.off("receive_joining", joiningListener);
     };
-  }, []);
+  }, [newComers]);
 
   const sendMessage = () => {
     const message = inputRef.current?.value || "";
@@ -92,10 +94,20 @@ export const Chat = () => {
             <div
               style={{ display: "flex", flexDirection: "column", gap: "15px" }}
             >
+              {newComers.length > 0 ? (
+                <span>
+                  {newComers[newComers.length - 1].user} joined in chat
+                </span>
+              ) : null}
               {messageList.map((message, index) => {
                 return (
                   <Fragment key={index}>
-                    {/* <span>{newComers[-1].user} joined in chat</span> */}
+                    {message.author !== user.name ? (
+                      <h2 style={{ fontFamily: "Exo", fontSize: "10px" }}>
+                        {message.author}
+                      </h2>
+                    ) : null}
+
                     <div
                       className="msg"
                       style={
@@ -109,6 +121,7 @@ export const Chat = () => {
                         style={{ width: "50px", height: "50px" }}
                         src={message.img}
                       /> */}
+
                       <div
                         className={
                           user.name === message.author
