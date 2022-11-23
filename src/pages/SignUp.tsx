@@ -142,7 +142,7 @@ export const SignUp = () => {
                         </div>
                       </div>
 
-                      <div className="form-check d-flex justify-content-center gap-2 mb-5">
+                      <div className="form-check d-flex justify-content-center gap-2 mb-2">
                         <input
                           className="form-check-input me-2"
                           type="checkbox"
@@ -156,6 +156,7 @@ export const SignUp = () => {
                           value=""
                           id="form2Example3c"
                         />
+
                         <label
                           className="form-check-label"
                           htmlFor="form2Example3"
@@ -164,6 +165,17 @@ export const SignUp = () => {
                           <a href="#!">Terms of service</a>
                         </label>
                       </div>
+
+                      <div className=" d-flex justify-content-center gap-2 mb-4">
+                        {" "}
+                        <label
+                          className="form-check-label"
+                          htmlFor="form2Example3"
+                        >
+                          Already Have An Account continue <a href="/">here</a>
+                        </label>
+                      </div>
+
                       {errors.exampleRequired && (
                         <span>This field is required</span>
                       )}
