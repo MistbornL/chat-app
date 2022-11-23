@@ -9,10 +9,12 @@ import penguin from "../../assets/Group.png";
 const socket = io("ws://localhost:5001", { withCredentials: false });
 export const Chat = () => {
   const { room } = useParams();
+
   type JoiningItems = {
     room: string;
     user: string;
   };
+
   type MessageListItem = {
     room: string;
     author: string;

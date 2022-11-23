@@ -4,9 +4,13 @@ import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm, SubmitHandler } from "react-hook-form";
+import React, { useState } from "react";
 
 type Inputs = {
-  example: string;
+  username: string;
+  email: string;
+  password: string;
+  repeatPassword: string;
   exampleRequired: string;
 };
 
@@ -18,6 +22,8 @@ export const SignUp = () => {
     formState: { errors },
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  const [checked, setChecked] = useState<boolean>(false);
+  console.log(checked);
 
   return (
     <section className="vh-100">
@@ -34,25 +40,34 @@ export const SignUp = () => {
 
                     <form
                       onSubmit={handleSubmit(onSubmit)}
-                      className="mx-1 mx-md-4 "
+                      className="mx-1 mx-md-3 "
                     >
-                      <div className="d-flex flex-row  align-items-center gap-2 mb-4">
+                      <div className="d-flex flex-row  align-items-center gap-2 mb-2">
                         <FontAwesomeIcon size="lg" icon={faUser} />
-                        <div className="form-outline flex-fill mb-0">
+                        <div className="form-outline flex-fill d-flex flex-column  ">
                           <input
                             type="text"
                             id="form3Example1c"
                             className="form-control"
                             placeholder="Your User Name"
-                            {...register("example", {
+                            {...register("username", {
                               required: true,
                               minLength: 5,
                             })}
                           />
+                          {errors?.username?.type === "required" ? (
+                            <span className="text-danger">
+                              Field Can Not Be Empty!!!
+                            </span>
+                          ) : !errors ? (
+                            <span className="text-danger">
+                              Username is Invalid!!!
+                            </span>
+                          ) : null}
                         </div>
                       </div>
 
-                      <div className="d-flex flex-row align-items-center gap-2 mb-4">
+                      <div className="d-flex flex-row align-items-center gap-2 mb-2">
                         <FontAwesomeIcon size="lg" icon={faEnvelope} />
                         <div className="form-outline flex-fill mb-0">
                           <input
@@ -60,15 +75,24 @@ export const SignUp = () => {
                             id="form3Example3c"
                             placeholder="Your Email"
                             className="form-control"
-                            {...register("example", {
+                            {...register("email", {
                               required: true,
                               minLength: 5,
                             })}
                           />
+                          {errors?.email?.type === "required" ? (
+                            <span className="text-danger">
+                              Field Can Not Be Empty!!!
+                            </span>
+                          ) : !errors ? (
+                            <span className="text-danger">
+                              email is Invalid!!!
+                            </span>
+                          ) : null}
                         </div>
                       </div>
 
-                      <div className="d-flex flex-row align-items-center gap-2 mb-4">
+                      <div className="d-flex flex-row align-items-center gap-2 mb-2">
                         <FontAwesomeIcon size="lg" icon={faLock} />
                         <div className="form-outline flex-fill mb-0">
                           <input
@@ -76,15 +100,24 @@ export const SignUp = () => {
                             id="form3Example4c"
                             className="form-control"
                             placeholder="Password"
-                            {...register("example", {
+                            {...register("password", {
                               required: true,
                               minLength: 5,
                             })}
                           />
+                          {errors?.password?.type === "required" ? (
+                            <span className="text-danger">
+                              Field Can Not Be Empty!!!
+                            </span>
+                          ) : !errors ? (
+                            <span className="text-danger">
+                              Password is Invalid!!!
+                            </span>
+                          ) : null}
                         </div>
                       </div>
 
-                      <div className="d-flex flex-row align-items-center gap-2 mb-4">
+                      <div className="d-flex flex-row align-items-center gap-2 mb-2">
                         <FontAwesomeIcon size="lg" icon={faKey} />
                         <div className="form-outline flex-fill mb-0">
                           <input
@@ -92,11 +125,20 @@ export const SignUp = () => {
                             id="form3Example4cd"
                             className="form-control"
                             placeholder="Repeat your password"
-                            {...register("example", {
+                            {...register("repeatPassword", {
                               required: true,
                               minLength: 5,
                             })}
                           />
+                          {errors?.repeatPassword?.type === "required" ? (
+                            <span className="text-danger">
+                              Field Can Not Be Empty!!!
+                            </span>
+                          ) : !errors ? (
+                            <span className="text-danger">
+                              repeatPassword is Invalid!!!
+                            </span>
+                          ) : null}
                         </div>
                       </div>
 
@@ -104,6 +146,13 @@ export const SignUp = () => {
                         <input
                           className="form-check-input me-2"
                           type="checkbox"
+                          onChange={(
+                            e: React.ChangeEvent<HTMLInputElement>
+                          ) => {
+                            e.target.checked
+                              ? setChecked(true)
+                              : setChecked(false);
+                          }}
                           value=""
                           id="form2Example3c"
                         />
@@ -121,7 +170,8 @@ export const SignUp = () => {
 
                       <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
                         <button
-                          type="button"
+                          disabled={!checked}
+                          type="submit"
                           className="btn btn-primary btn-lg"
                         >
                           Register
