@@ -1,12 +1,12 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
-import { SignIn } from "./pages/auth/SignIn";
 import { Chat } from "./pages/chat/Chat";
+import { SignUp } from "./pages/SignUp";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<SignIn />} />
+      <Route path="/" element={<SignUp />} />
       <Route path="/chat/:room" element={<Chat />} />
     </Routes>
   );
