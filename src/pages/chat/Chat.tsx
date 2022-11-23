@@ -6,7 +6,7 @@ import "./chat.scss";
 import ScrollToBottom from "react-scroll-to-bottom";
 import penguin from "../../assets/Group.png";
 
-const socket = io("ws://localhost:3001", { withCredentials: false });
+const socket = io("ws://localhost:5001", { withCredentials: false });
 export const Chat = () => {
   const { room } = useParams();
   type JoiningItems = {
