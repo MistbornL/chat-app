@@ -1,8 +1,12 @@
 import axios from "axios";
+import React from "react";
 import { NavigateFunction } from "react-router-dom";
 
-export const login = async (
-  data: { username: string; password: string },
+export const Login = async (
+  data: {
+    username: React.MutableRefObject<HTMLInputElement | null>;
+    password: React.MutableRefObject<HTMLInputElement | null>;
+  },
   navigate: NavigateFunction
 ) => {
   const { username, password } = data;

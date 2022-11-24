@@ -1,9 +1,9 @@
 import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
-import { faKey } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { Login } from "../api/login";
 
 type Inputs = {
   username: string;
@@ -14,6 +14,10 @@ type Inputs = {
 };
 
 export const SignIn = () => {
+  const username = useRef<null | HTMLInputElement>(null);
+  const password = useRef<null | HTMLInputElement>(null);
+  const data = { username, password };
+  const navigate = useNavigate();
   return (
     <section className="vh-100">
       <div className="container h-100">
@@ -27,15 +31,19 @@ export const SignIn = () => {
                       Sign up
                     </p>
 
-                    <form className="mx-1 mx-md-3 ">
+                    <form
+                      onSubmit={() => Login(data, navigate)}
+                      className="mx-1 mx-md-3 "
+                    >
                       <div className="d-flex flex-row  align-items-center gap-2 mb-4">
                         <FontAwesomeIcon size="lg" icon={faUser} />
                         <div className="form-outline flex-fill d-flex flex-column  ">
                           <input
+                            ref={username}
                             type="text"
                             id="form3Example1c"
                             className="form-control"
-                            placeholder="Your User Name"
+                            placeholder="Username..."
                           />
                         </div>
                       </div>
@@ -44,10 +52,11 @@ export const SignIn = () => {
                         <FontAwesomeIcon size="lg" icon={faLock} />
                         <div className="form-outline flex-fill mb-0">
                           <input
+                            ref={password}
                             type="password"
                             id="form3Example4c"
                             className="form-control"
-                            placeholder="Password"
+                            placeholder="Password..."
                           />
                         </div>
                       </div>

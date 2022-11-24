@@ -6,6 +6,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm, SubmitHandler } from "react-hook-form";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Register } from "../api/register";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 type Inputs = {
   username: string;
   email: string;
@@ -15,14 +19,25 @@ type Inputs = {
 };
 
 export const SignUp = () => {
+  const formSchema = Yup.object().shape({
+    password: Yup.string()
+      .required("Password is mandatory")
+      .min(3, "Password must be at 3 char long"),
+    confirmPwd: Yup.string()
+      .required("Password is mandatory")
+      .oneOf([Yup.ref("password")], "Passwords does not match"),
+    username: Yup.string().required("password is mandatory"),
+  });
+  const formOptions = { resolver: yupResolver(formSchema) };
+
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<Inputs>(formOptions);
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<Inputs> = (data) => Register(data, navigate);
   const [checked, setChecked] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -49,22 +64,15 @@ export const SignUp = () => {
                           <input
                             type="text"
                             id="form3Example1c"
-                            className="form-control"
                             placeholder="Your User Name"
                             {...register("username", {
                               required: true,
                               minLength: 5,
                             })}
+                            className={`form-control ${
+                              errors.username ? "is-invalid" : ""
+                            }`}
                           />
-                          {errors?.username?.type === "required" ? (
-                            <span className="text-danger">
-                              Field Can Not Be Empty!!!
-                            </span>
-                          ) : !errors ? (
-                            <span className="text-danger">
-                              Username is Invalid!!!
-                            </span>
-                          ) : null}
                         </div>
                       </div>
 
@@ -75,21 +83,14 @@ export const SignUp = () => {
                             type="email"
                             id="form3Example3c"
                             placeholder="Your Email"
-                            className="form-control"
                             {...register("email", {
                               required: true,
                               minLength: 5,
                             })}
+                            className={`form-control ${
+                              errors.email ? "is-invalid" : ""
+                            }`}
                           />
-                          {errors?.email?.type === "required" ? (
-                            <span className="text-danger">
-                              Field Can Not Be Empty!!!
-                            </span>
-                          ) : !errors ? (
-                            <span className="text-danger">
-                              email is Invalid!!!
-                            </span>
-                          ) : null}
                         </div>
                       </div>
 
@@ -99,22 +100,18 @@ export const SignUp = () => {
                           <input
                             type="password"
                             id="form3Example4c"
-                            className="form-control"
                             placeholder="Password"
                             {...register("password", {
                               required: true,
                               minLength: 5,
                             })}
+                            className={`form-control ${
+                              errors.password ? "is-invalid" : ""
+                            }`}
                           />
-                          {errors?.password?.type === "required" ? (
-                            <span className="text-danger">
-                              Field Can Not Be Empty!!!
-                            </span>
-                          ) : !errors ? (
-                            <span className="text-danger">
-                              Password is Invalid!!!
-                            </span>
-                          ) : null}
+                          <div className="invalid-feedback">
+                            {errors.password?.message}
+                          </div>
                         </div>
                       </div>
 
@@ -124,22 +121,19 @@ export const SignUp = () => {
                           <input
                             type="password"
                             id="form3Example4cd"
-                            className="form-control"
                             placeholder="Repeat your password"
                             {...register("repeatPassword", {
                               required: true,
                               minLength: 5,
                             })}
+                            className={`form-control ${
+                              errors.repeatPassword ? "is-invalid" : ""
+                            }`}
                           />
-                          {errors?.repeatPassword?.type === "required" ? (
-                            <span className="text-danger">
-                              Field Can Not Be Empty!!!
-                            </span>
-                          ) : !errors ? (
-                            <span className="text-danger">
-                              repeatPassword is Invalid!!!
-                            </span>
-                          ) : null}
+
+                          <div className="invalid-feedback">
+                            {errors.repeatPassword?.message}
+                          </div>
                         </div>
                       </div>
 

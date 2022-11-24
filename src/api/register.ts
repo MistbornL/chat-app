@@ -1,7 +1,7 @@
 import axios from "axios";
 import { NavigateFunction } from "react-router-dom";
 
-export const register = async (
+export const Register = async (
   data: { username: string; email: string; password: string },
   navigate: NavigateFunction
 ) => {
