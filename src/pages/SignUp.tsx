@@ -5,7 +5,7 @@ import { faKey } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm, SubmitHandler } from "react-hook-form";
 import React, { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 type Inputs = {
   username: string;
   email: string;
@@ -21,9 +21,10 @@ export const SignUp = () => {
     watch,
     formState: { errors },
   } = useForm<Inputs>();
+
   const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
   const [checked, setChecked] = useState<boolean>(false);
-  console.log(checked);
+  const navigate = useNavigate();
 
   return (
     <section className="vh-100">
