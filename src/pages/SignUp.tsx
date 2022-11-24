@@ -23,10 +23,13 @@ export const SignUp = () => {
     password: Yup.string()
       .required("Password is mandatory")
       .min(3, "Password must be at 3 char long"),
-    confirmPwd: Yup.string()
+    repeatPassword: Yup.string()
       .required("Password is mandatory")
       .oneOf([Yup.ref("password")], "Passwords does not match"),
-    username: Yup.string().required("password is mandatory"),
+    username: Yup.string()
+      .required("username is mandatory")
+      .min(5, "Username must be at least 5 characters long"),
+    email: Yup.string().required("email is mandatory"),
   });
   const formOptions = { resolver: yupResolver(formSchema) };
 
@@ -40,6 +43,7 @@ export const SignUp = () => {
   const onSubmit: SubmitHandler<Inputs> = (data) => Register(data, navigate);
   const [checked, setChecked] = useState<boolean>(false);
   const navigate = useNavigate();
+  console.log(errors);
 
   return (
     <section className="vh-100">
@@ -64,7 +68,7 @@ export const SignUp = () => {
                           <input
                             type="text"
                             id="form3Example1c"
-                            placeholder="Your User Name"
+                            placeholder="Username..."
                             {...register("username", {
                               required: true,
                               minLength: 5,
@@ -73,6 +77,9 @@ export const SignUp = () => {
                               errors.username ? "is-invalid" : ""
                             }`}
                           />
+                          <div className="invalid-feedback">
+                            {errors.username?.message}
+                          </div>
                         </div>
                       </div>
 
@@ -91,6 +98,9 @@ export const SignUp = () => {
                               errors.email ? "is-invalid" : ""
                             }`}
                           />
+                          <div className="invalid-feedback">
+                            {errors.email?.message}
+                          </div>
                         </div>
                       </div>
 
