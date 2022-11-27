@@ -16,8 +16,8 @@ type Inputs = {
 export const SignIn = () => {
   const username = useRef<null | HTMLInputElement>(null);
   const password = useRef<null | HTMLInputElement>(null);
-  const data = { username, password };
   const navigate = useNavigate();
+
   return (
     <section className="vh-100">
       <div className="container h-100">
@@ -28,11 +28,14 @@ export const SignIn = () => {
                 <div className="row justify-content-center">
                   <div className="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
                     <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">
-                      Sign up
+                      Sign in
                     </p>
 
                     <form
-                      onSubmit={() => Login(data, navigate)}
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        Login(username?.current, password?.current, navigate);
+                      }}
                       className="mx-1 mx-md-3 "
                     >
                       <div className="d-flex flex-row  align-items-center gap-2 mb-4">

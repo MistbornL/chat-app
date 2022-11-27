@@ -1,26 +1,20 @@
 import axios from "axios";
-import React from "react";
 import { NavigateFunction } from "react-router-dom";
 
 export const Login = async (
-  data: {
-    username: React.MutableRefObject<HTMLInputElement | null>;
-    password: React.MutableRefObject<HTMLInputElement | null>;
-  },
+  username: HTMLInputElement | null,
+  password: HTMLInputElement | null,
   navigate: NavigateFunction
 ) => {
-  const { username, password } = data;
   await axios
-    .post("https://collection-server-mistborn.herokuapp.com/user/login", {
-      username: username,
-      password: password,
+    .post("http://localhost:5000/user/login", {
+      username: username?.value,
+      password: password?.value,
     })
     .then((res) => {
       if (res.status === 200) {
         localStorage.setItem("token", res.data.token);
-        navigate("/chat");
-      } else {
-        alert("Something went wrong");
+        navigate(`/createRoom/${username?.value}`);
       }
     })
     .catch((err) => {

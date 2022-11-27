@@ -21,7 +21,7 @@ export const Register = async (
     .catch((err) => {
       console.log(err.response.data);
       if (err.response.status === 409) {
-        alert("email already exists");
+        alert("user already exists");
       }
     });
 };

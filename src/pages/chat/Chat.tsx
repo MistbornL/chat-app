@@ -1,4 +1,3 @@
-import { useAuth } from "@frontegg/react";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
@@ -7,8 +6,14 @@ import ScrollToBottom from "react-scroll-to-bottom";
 import penguin from "../../assets/Group.png";
 
 const socket = io("ws://localhost:5001", { withCredentials: false });
+
 export const Chat = () => {
   const { room } = useParams();
+  const [messageList, setMessageList] = useState<MessageListItem[]>([]);
+  const { user } = useParams();
+  const [newComers, setNewComers] = useState<JoiningItems[]>([]);
+  const inputRef = useRef<null | HTMLInputElement>(null);
+  const bottomRef = useRef<null | HTMLInputElement>(null);
 
   type JoiningItems = {
     room: string;
@@ -17,24 +22,18 @@ export const Chat = () => {
 
   type MessageListItem = {
     room: string;
-    author: string;
-    img: string;
+    author: string | undefined;
     message: string;
     time: string;
   };
 
-  const [messageList, setMessageList] = useState<MessageListItem[]>([]);
-  const { user }: any = useAuth();
-  const [newComers, setNewComers] = useState<JoiningItems[]>([]);
-  const inputRef = useRef<null | HTMLInputElement>(null);
-  console.log(newComers);
   useEffect(() => {
-    socket.emit("join_room", { room: room, user: user.name }, (error: any) => {
+    socket.emit("join_room", { room: room, user: user }, (error: any) => {
       if (error) {
         alert(error);
       }
     });
-  }, [room, user.name]);
+  }, [room, user]);
 
   useEffect(() => {
     const joiningListener = (data: JoiningItems) => {
@@ -60,13 +59,16 @@ export const Chat = () => {
     };
   }, [newComers]);
 
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messageList]);
+
   const sendMessage = () => {
     const message = inputRef.current?.value || "";
     if (message !== "") {
       const messageData = {
         room: room || "",
-        author: user.name,
-        img: user.profilePictureUrl,
+        author: user,
         message: message,
         time:
           new Date(Date.now()).getHours() +
@@ -86,15 +88,20 @@ export const Chat = () => {
   };
 
   return (
-    <div className="chat">
-      <div className="chat-top">
-        <h1>Welcome to {room}</h1>
-      </div>
-      <div className="chat-middle">
-        <div className="chat-section">
-          <ScrollToBottom className="scroll">
+    <main style={{ padding: "2rem" }}>
+      <div style={{ marginTop: "4rem", borderRadius: "5px" }} className="chat">
+        <div className="chat-top">
+          <h1>Welcome to {room}</h1>
+        </div>
+        <div className="chat-middle">
+          <div className="chat-section" ref={bottomRef}>
             <div
-              style={{ display: "flex", flexDirection: "column", gap: "15px" }}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "15px",
+                marginTop: "auto",
+              }}
             >
               {newComers.length > 0 ? (
                 <span>
@@ -104,7 +111,7 @@ export const Chat = () => {
               {messageList.map((message, index) => {
                 return (
                   <Fragment key={index}>
-                    {message.author !== user.name ? (
+                    {message.author !== user ? (
                       <h2 style={{ fontFamily: "Exo", fontSize: "10px" }}>
                         {message.author}
                       </h2>
@@ -113,20 +120,20 @@ export const Chat = () => {
                     <div
                       className="msg"
                       style={
-                        user.name === message.author
+                        user === message.author
                           ? { justifyContent: "flex-end" }
                           : { justifyContent: "flex-start" }
                       }
                     >
                       {/* <img
-                        alt="userImg"
-                        style={{ width: "50px", height: "50px" }}
-                        src={message.img}
-                      /> */}
+                      alt="userImg"
+                      style={{ width: "50px", height: "50px" }}
+                      src={message.img}
+                    /> */}
 
                       <div
                         className={
-                          user.name === message.author
+                          user === message.author
                             ? "sent-by-me"
                             : "sent-by-else"
                         }
@@ -138,15 +145,20 @@ export const Chat = () => {
                 );
               })}
             </div>
-          </ScrollToBottom>
+          </div>
+
+          <form className="chat-bottom" onSubmit={handleSubmit}>
+            <input
+              className="form-control"
+              ref={inputRef}
+              type="text"
+              placeholder="Type Message..."
+            />
+
+            <img style={{ cursor: "pointer" }} src={penguin} alt="penguin" />
+          </form>
         </div>
-
-        <form className="chat-bottom" onSubmit={handleSubmit}>
-          <input ref={inputRef} type="text" placeholder="Type Message..." />
-
-          <img style={{ cursor: "pointer" }} src={penguin} alt="penguin" />
-        </form>
       </div>
-    </div>
+    </main>
   );
 };
