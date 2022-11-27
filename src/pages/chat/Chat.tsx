@@ -162,7 +162,12 @@ export const Chat = () => {
               placeholder="Type Message..."
             />
 
-            <img style={{ cursor: "pointer" }} src={penguin} alt="penguin" />
+            <img
+              onClick={() => sendMessage()}
+              style={{ cursor: "pointer" }}
+              src={penguin}
+              alt="penguin"
+            />
           </form>
         </div>
       </div>
