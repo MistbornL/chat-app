@@ -14,6 +14,13 @@ export const Chat = () => {
   const [newComers, setNewComers] = useState<JoiningItems[]>([]);
   const inputRef = useRef<null | HTMLInputElement>(null);
   const bottomRef = useRef<null | HTMLInputElement>(null);
+  const handleScroll = (ref: any) => {
+    window.scrollTo({
+      top: ref.offsetTop,
+      left: 0,
+      behavior: "smooth",
+    });
+  };
 
   type JoiningItems = {
     room: string;
