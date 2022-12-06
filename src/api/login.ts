@@ -7,7 +7,7 @@ export const Login = async (
   navigate: NavigateFunction
 ) => {
   await axios
-    .post("http://localhost:5000/user/login", {
+    .post("https://chat-server-kappa.vercel.app/user/login", {
       username: username?.value,
       password: password?.value,
     })
@@ -15,6 +15,8 @@ export const Login = async (
       if (res.status === 200) {
         localStorage.setItem("token", res.data.token);
         navigate(`/createRoom/${username?.value}`);
+      } else {
+        alert("something went wrong");
       }
     })
     .catch((err) => {

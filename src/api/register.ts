@@ -6,7 +6,7 @@ export const Register = async (
   navigate: NavigateFunction
 ) => {
   await axios
-    .post("http://localhost:5000/user/signup", {
+    .post("https://chat-server-kappa.vercel.app/user/signup", {
       email: data.email,
       password: data.password,
       username: data.username,
@@ -16,6 +16,8 @@ export const Register = async (
       if (res.status === 200) {
         alert("User Created Successfully");
         navigate("/");
+      } else {
+        alert("something went wrong");
       }
     })
     .catch((err) => {
