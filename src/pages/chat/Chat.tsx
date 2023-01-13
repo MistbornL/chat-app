@@ -2,10 +2,11 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import "./chat.scss";
-import ScrollToBottom from "react-scroll-to-bottom";
 import penguin from "../../assets/Group.png";
 
-const socket = io("ws://localhost:5001", { withCredentials: false });
+const socket = io("https://vercel.com/mistbornl/chat-server", {
+  withCredentials: false,
+});
 
 export const Chat = () => {
   const { room } = useParams();
@@ -14,13 +15,6 @@ export const Chat = () => {
   const [newComers, setNewComers] = useState<JoiningItems[]>([]);
   const inputRef = useRef<null | HTMLInputElement>(null);
   const bottomRef = useRef<null | HTMLInputElement>(null);
-  const handleScroll = (ref: any) => {
-    window.scrollTo({
-      top: ref.offsetTop,
-      left: 0,
-      behavior: "smooth",
-    });
-  };
 
   type JoiningItems = {
     room: string;
