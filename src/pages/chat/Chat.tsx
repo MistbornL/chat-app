@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 import "./chat.scss";
 import penguin from "../../assets/Group.png";
 
-const socket = io("https://vercel.com/mistbornl/chat-server", {
+const socket = io("https://chat-server-kappa.vercel.app/", {
   withCredentials: false,
 });
 
